@@ -8,6 +8,6 @@ public class ExerciseController {
 	@GetMapping("/exercise")
 	public String exercise(){
 		System.out.println("exercise controller");
-		return "hello world 수정해봤어";
+		return "hello world compose랑 충돌 안되게 수정해봤어";
 	}
 }

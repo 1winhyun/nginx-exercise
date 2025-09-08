@@ -21,19 +21,8 @@ jobs:
           username: ${{secrets.DEV_USERNAME}}
           key: ${{secrets.DEV_KEY}}
           script: |
-            sudo docker pull ${{secrets.DOCKER_USERNAME}}/unionmate:latest
-            
-            EXISTING_CONTAINER_ID=$(sudo docker ps -q -f "publish=8080" -f "status=running")
-            if [ ! -z "$EXISTING_CONTAINER_ID" ]; then
-              sudo docker stop $EXISTING_CONTAINER_ID
-              sudo docker rm $EXISTING_CONTAINER_ID
-            fi
-            
-            EXISTING_CONTAINER_ID=$(sudo docker ps -q -f "publish=8080" -f "status=exited")
-            if [ ! -z "$EXISTING_CONTAINER_ID" ]; then
-              sudo docker rm $EXISTING_CONTAINER_ID
-            fi
-            
-            sudo docker rm $(sudo docker ps --filter 'status=exited' -a -q) 
-            sudo docker run -d --name unionmate_dev -p 8080:8080 ${{secrets.DOCKER_USERNAME}}/unionmate:latest
-            sudo docker image prune -a -f
+            cd /home/ubuntu
+            docker rm -f unionmate_dev || true
+            docker compose pull unionmate-dev
+            docker compose up -d --no-deps --force-recreate --pull always unionmate-dev
+            docker image prune -f
